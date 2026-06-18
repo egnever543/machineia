@@ -94,8 +94,8 @@ export default function ChatInterface({ productId, productName }: { productId: s
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col">
-      <div className="border-b border-gray-800 px-4 py-3 bg-gray-900">
+    <div className="bg-gray-950 flex flex-col" style={{ height: '100dvh' }}>
+      <div className="flex-shrink-0 border-b border-gray-800 px-4 py-3 bg-gray-900 safe-top">
         <p className="text-white font-semibold text-sm text-center">{productName}</p>
       </div>
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 max-w-2xl mx-auto w-full">
@@ -127,7 +127,7 @@ export default function ChatInterface({ productId, productName }: { productId: s
         )}
         <div ref={bottomRef} />
       </div>
-      <div className="border-t border-gray-800 px-4 py-4 bg-gray-900">
+      <div className="flex-shrink-0 border-t border-gray-800 px-4 py-3 bg-gray-900 safe-bottom">
         <div className="max-w-2xl mx-auto flex gap-3">
           <input
             type="text"
