@@ -16,6 +16,7 @@ export default function ChatInterface({ productId, productName }: { productId: s
   const [loading, setLoading] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [started, setStarted] = useState(false)
+  const [initError, setInitError] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   const getVisitorId = () => {
@@ -76,7 +77,8 @@ export default function ChatInterface({ productId, productName }: { productId: s
         }]
       })
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Desculpe, ocorreu um erro. Tente novamente.' }])
+      if (isInitial) setInitError(true)
+      else setMessages(prev => [...prev, { role: 'assistant', content: 'Desculpe, ocorreu um erro. Tente novamente.' }])
     } finally {
       setLoading(false)
     }
@@ -99,6 +101,11 @@ export default function ChatInterface({ productId, productName }: { productId: s
         <p className="text-white font-semibold text-sm text-center">{productName}</p>
       </div>
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 max-w-2xl mx-auto w-full">
+        {initError && (
+          <div className="flex justify-center mt-8">
+            <p className="text-red-400 text-sm text-center">Não foi possível iniciar o chat.<br/>Verifique se o produto está configurado.</p>
+          </div>
+        )}
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[80%] ${msg.role === 'user' ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-100'} rounded-2xl px-4 py-3 text-sm leading-relaxed`}>
@@ -127,8 +134,8 @@ export default function ChatInterface({ productId, productName }: { productId: s
         )}
         <div ref={bottomRef} />
       </div>
-      <div className="flex-shrink-0 border-t border-gray-800 px-4 py-3 bg-gray-900 safe-bottom">
-        <div className="max-w-2xl mx-auto flex gap-3">
+      <div className="flex-shrink-0 border-t border-gray-800 bg-gray-900 safe-bottom">
+        <div className="flex items-center gap-2 px-3 py-3 max-w-2xl mx-auto">
           <input
             type="text"
             value={input}
@@ -136,12 +143,12 @@ export default function ChatInterface({ productId, productName }: { productId: s
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input) } }}
             placeholder="Digite sua mensagem..."
             disabled={loading}
-            className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 text-sm disabled:opacity-50"
+            className="flex-1 min-w-0 bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 text-sm disabled:opacity-50"
           />
           <button
             onClick={() => sendMessage(input)}
             disabled={loading || !input.trim()}
-            className="bg-purple-600 hover:bg-purple-700 disabled:opacity-40 text-white p-3 rounded-xl transition"
+            className="flex-shrink-0 bg-purple-600 hover:bg-purple-700 disabled:opacity-40 text-white p-3 rounded-xl transition"
           >
             <Send size={18} />
           </button>
